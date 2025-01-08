@@ -1,102 +1,67 @@
 import React, { useState } from "react";
+import { TextField, Button, Container, Box, Typography } from "@mui/material";
 import axios from "axios";
-import { TextField, Button, Container, Typography } from "@mui/material";
-import { styled } from "@mui/system";
-
-// עיצוב מותאם אישית בעזרת styled-components
-const CustomButton = styled(Button)({
-  backgroundColor: "#ff6f61",
-  color: "white",
-  fontSize: "16px",
-  borderRadius: "10px",
-  textTransform: "none",
-  padding: "10px 20px",
-  "&:hover": {
-    backgroundColor: "#ff4e3b",
-  },
-  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-  transition: "background-color 0.3s ease",
-});
-
-const CustomTextField = styled(TextField)({
-  "& label": {
-    fontWeight: "bold",
-  },
-  "& .MuiInputBase-root": {
-    borderRadius: "8px",
-  },
-  "& .MuiOutlinedInput-root": {
-    "&:hover fieldset": {
-      borderColor: "#ff6f61",
-    },
-  },
-});
 
 function AddRecipePage() {
   const [title, setTitle] = useState("");
-  const [ingredients, setIngredients] = useState("");
-  const [instructions, setInstructions] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const newRecipe = {
-      title,
-      ingredients: ingredients.split(","),
-      instructions,
-      author: "userId", // לשים את ה-userId האמיתי של המשתמש
-    };
-
-    axios
-      .post("/api/recipes", newRecipe)
-      .then((response) => {
-        console.log("Recipe added:", response.data);
-      })
-      .catch((error) => {
-        console.error("Error adding recipe:", error);
-      });
+  const handleAddRecipe = async () => {
+    try {
+      await axios.post(
+        "http://localhost:5000/recipes",
+        { title, description, category },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      alert("Recipe added successfully!");
+    } catch (error) {
+      console.error("Error adding recipe", error);
+      alert("Failed to add recipe");
+    }
   };
 
   return (
-    <Container maxWidth="sm" sx={{ paddingTop: "2rem" }}>
-      <Typography
-        variant="h4"
-        gutterBottom
-        sx={{ textAlign: "center", fontWeight: "bold", color: "#333" }}
-      >
-        Add a New Recipe
-      </Typography>
-      <form onSubmit={handleSubmit}>
-        <CustomTextField
+    <Container>
+      <Box sx={{ marginTop: 8 }}>
+        <Typography variant="h5">Add a New Recipe</Typography>
+        <TextField
           label="Title"
-          variant="outlined"
           fullWidth
+          variant="outlined"
           margin="normal"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <CustomTextField
-          label="Ingredients (comma separated)"
-          variant="outlined"
+        <TextField
+          label="Description"
           fullWidth
-          margin="normal"
-          value={ingredients}
-          onChange={(e) => setIngredients(e.target.value)}
-        />
-        <CustomTextField
-          label="Instructions"
           variant="outlined"
-          fullWidth
           margin="normal"
-          multiline
-          rows={4}
-          value={instructions}
-          onChange={(e) => setInstructions(e.target.value)}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         />
-        <CustomButton variant="contained" fullWidth type="submit">
+        <TextField
+          label="Category"
+          fullWidth
+          variant="outlined"
+          margin="normal"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        />
+        <Button
+          onClick={handleAddRecipe}
+          variant="contained"
+          fullWidth
+          sx={{ marginTop: "1rem" }}
+        >
           Add Recipe
-        </CustomButton>
-      </form>
+        </Button>
+      </Box>
     </Container>
   );
 }

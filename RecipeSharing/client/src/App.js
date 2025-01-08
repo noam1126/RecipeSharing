@@ -8,6 +8,8 @@ import {
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import RegisterPage from "./pages/RegisterPage";
+import FavoritesPage from "./pages/FavoritesPage"; // ייבוא הדף של המועדפים
+import AddRecipePage from "./pages/AddRecipePage"; // ייבוא דף יצירת מתכון חדש
 
 function App() {
   const isAuthenticated = localStorage.getItem("authToken"); // בודק אם יש טוקן
@@ -16,10 +18,7 @@ function App() {
     <Router>
       <Routes>
         {/* אם לא מחובר, עובר לדף התחברות */}
-        <Route
-          path="/"
-          element={isAuthenticated ? <Navigate to="/home" /> : <LoginPage />}
-        />
+        <Route path="/" element={<LoginPage />} />
 
         {/* עמוד התחברות */}
         <Route
@@ -35,6 +34,8 @@ function App() {
 
         {/* עמוד הרשמה */}
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/favorites" element={<FavoritesPage />} />
+        <Route path="/add-recipe" element={<AddRecipePage />} />
       </Routes>
     </Router>
   );

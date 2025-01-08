@@ -1,5 +1,9 @@
+// client/src/components/RegisterPage.js
+
 import React, { useState } from "react";
 import { TextField, Button, Typography, Container, Box } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import { Link } from "react-router-dom";
 
 function RegisterPage() {
@@ -7,8 +11,40 @@ function RegisterPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleRegister = () => {
-    // לוגיקה להרשמה למערכת (עם API)
+  const navigate = useNavigate();
+
+  // בלחיצה על כפתור ההרשמה
+  const handleRegister = async () => {
+    if (password !== confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/users/register",
+        {
+          email,
+          password,
+          confirmPassword,
+        }
+      );
+
+      if (response.status === 201) {
+        alert("User registered successfully!");
+        navigate("/login"); // כאן אנחנו משתמשים ב-navigate
+      } else {
+        alert(response.data.message || "Registration failed");
+      }
+    } catch (error) {
+      if (error.response) {
+        // טיפול בהודעות שגיאה מהשרת
+        alert(error.response.data.message || "Something went wrong!");
+      } else {
+        alert("Something went wrong!");
+      }
+      console.error(error);
+    }
   };
 
   return (

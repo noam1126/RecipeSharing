@@ -1,13 +1,36 @@
 import React, { useState } from "react";
 import { TextField, Button, Typography, Container, Box } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleLogin = () => {
-    // לוגיקה להתחברות למערכת (עם API)
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/users/login",
+        {
+          email,
+          password,
+        }
+      );
+
+      // בדוק אם התחברות הצליחה
+      if (response.data.token) {
+        // שמירת הטוקן ב-localStorage
+        localStorage.setItem("authToken", response.data.token);
+        alert("Login successful!");
+        navigate("/home"); // מעבר לעמוד הראשי
+      } else {
+        alert("Invalid credentials!");
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+      alert("An error occurred during login.");
+    }
   };
 
   return (
