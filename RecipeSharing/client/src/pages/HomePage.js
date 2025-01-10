@@ -2,22 +2,23 @@ import React, { useState, useEffect } from "react";
 import {
   Container,
   Box,
-  Tab,
-  Tabs,
   Typography,
-  Button,
-  TextField,
   IconButton,
   Grid,
   Card,
   CardContent,
+  CardMedia,
+  TextField,
+  MenuItem,
+  AppBar,
+  Toolbar,
+  Paper,
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
-import { Favorite, Logout, AddCircle } from "@mui/icons-material"; // אייקונים
-import axios from "axios"; // אם תשתמש ב-axios לשליפת המתכונים
+import { Favorite, Logout, AddCircle } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function HomePage({ user, onLogout }) {
-  const [tabValue, setTabValue] = useState(0);
   const [recipes, setRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -33,7 +34,7 @@ function HomePage({ user, onLogout }) {
           },
         });
         setRecipes(response.data);
-        setFilteredRecipes(response.data); // הצגת כל המתכונים בהתחלה
+        setFilteredRecipes(response.data);
       } catch (error) {
         console.error("Error fetching recipes", error);
       }
@@ -42,119 +43,179 @@ function HomePage({ user, onLogout }) {
     fetchRecipes();
   }, []);
 
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
-  };
-
   const handleLogout = () => {
-    localStorage.removeItem("token"); // מחיקת ה-token
-    onLogout();
-    navigate("/login"); // הפניית המשתמש לדף ההתחברות
+    localStorage.removeItem("token");
+    if (onLogout) {
+      onLogout(); // בדיקה אם onLogout מוגדרת
+    }
+    navigate("/login"); // העברת המשתמש למסך התחברות
   };
 
   const handleSearch = (event) => {
-    setSearchQuery(event.target.value);
-    filterRecipes(event.target.value, filter);
+    const value = event.target.value;
+    setSearchQuery(value);
+    filterRecipes(value, filter);
   };
 
   const handleFilterChange = (event) => {
-    setFilter(event.target.value);
-    filterRecipes(searchQuery, event.target.value);
+    const value = event.target.value;
+    setFilter(value);
+    filterRecipes(searchQuery, value);
   };
 
-  const filterRecipes = (searchQuery, filter) => {
+  const filterRecipes = (query, category) => {
     let filtered = recipes.filter((recipe) =>
-      recipe.title.toLowerCase().includes(searchQuery.toLowerCase())
+      recipe.title.toLowerCase().includes(query.toLowerCase())
     );
 
-    if (filter) {
-      filtered = filtered.filter((recipe) => recipe.category === filter);
+    if (category) {
+      filtered = filtered.filter((recipe) => recipe.category === category);
     }
 
     setFilteredRecipes(filtered);
   };
 
   return (
-    <Container>
-      <Box
-        sx={{ display: "flex", justifyContent: "space-between", marginTop: 2 }}
-      >
-        {/* אייקונים בצד שמאל */}
-        <Box>
-          <IconButton onClick={() => navigate("/favorites")}>
-            <Favorite />
-          </IconButton>
-          <IconButton onClick={handleLogout}>
-            <Logout />
-          </IconButton>
-          {user && user.isAdmin && (
-            <IconButton onClick={() => navigate("/add-recipe")}>
+    <Box
+      sx={{ backgroundColor: "#F7F9FC", minHeight: "100vh", paddingBottom: 4 }}
+    >
+      {/* כותרת עליונה */}
+      <AppBar position="static" sx={{ backgroundColor: "#AEDFF7" }}>
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+          {/* שם האתר בצד שמאל */}
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: "bold",
+              fontFamily: "'Poppins', sans-serif",
+              color: "#2C3E50",
+              cursor: "pointer",
+            }}
+            onClick={() => navigate("/")}
+          >
+            Nono
+          </Typography>
+
+          {/* אייקונים בצד ימין */}
+          <Box>
+            <IconButton
+              sx={{ color: "#2C3E50" }}
+              onClick={() => navigate("/favorites")}
+            >
+              <Favorite />
+            </IconButton>
+            <IconButton sx={{ color: "#2C3E50" }} onClick={handleLogout}>
+              <Logout />
+            </IconButton>
+
+            <IconButton
+              sx={{ color: "#2C3E50" }}
+              onClick={() => navigate("/add-recipe")}
+            >
               <AddCircle />
             </IconButton>
-          )}
-        </Box>
+          </Box>
+        </Toolbar>
+      </AppBar>
 
-        {/* שם האתר */}
-        <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-          Nono
-        </Typography>
-      </Box>
-
-      <Box sx={{ width: "100%", marginBottom: 2 }}>
-        <Tabs
-          value={tabValue}
-          onChange={handleTabChange}
-          aria-label="navigation tabs"
-          centered
+      <Container>
+        {/* שורת חיפוש */}
+        <Paper
+          elevation={3}
+          sx={{
+            padding: 2,
+            marginY: 3,
+            borderRadius: 3,
+            display: "flex",
+            gap: 2,
+            flexWrap: "wrap",
+            backgroundColor: "#FFFFFF",
+          }}
         >
-          <Tab label="Home" />
-          <Tab label="Favorites" />
-        </Tabs>
-      </Box>
+          <TextField
+            label="Search Recipes"
+            variant="outlined"
+            value={searchQuery}
+            onChange={handleSearch}
+            sx={{
+              flex: 2,
+              minWidth: 250,
+              "& .MuiOutlinedInput-root": {
+                borderRadius: 20,
+              },
+            }}
+          />
+          <TextField
+            select
+            label="Filter by Category"
+            value={filter}
+            onChange={handleFilterChange}
+            variant="outlined"
+            sx={{
+              flex: 1,
+              minWidth: 150,
+              "& .MuiOutlinedInput-root": {
+                borderRadius: 20,
+              },
+            }}
+          >
+            <MenuItem value="">All</MenuItem>
+            <MenuItem value="Dessert">Dessert</MenuItem>
+            <MenuItem value="Starter">Starter</MenuItem>
+            <MenuItem value="Main">Main</MenuItem>
+          </TextField>
+        </Paper>
 
-      {/* שורת חיפוש */}
-      <Box sx={{ marginBottom: 2 }}>
-        <TextField
-          label="Search Recipes"
-          variant="outlined"
-          fullWidth
-          value={searchQuery}
-          onChange={handleSearch}
-        />
-      </Box>
-
-      {/* פילטור לפי סוגי המתכונים */}
-      <Box sx={{ marginBottom: 2 }}>
-        <TextField
-          select
-          label="Filter by Category"
-          value={filter}
-          onChange={handleFilterChange}
-          fullWidth
-          variant="outlined"
-        >
-          <option value="">All</option>
-          <option value="Dessert">Dessert</option>
-          <option value="Starter">Starter</option>
-          <option value="Main">Main</option>
-        </TextField>
-      </Box>
-
-      {/* הצגת המתכונים */}
-      <Grid container spacing={3}>
-        {filteredRecipes.map((recipe) => (
-          <Grid item xs={12} sm={6} md={4} key={recipe._id}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">{recipe.title}</Typography>
-                <Typography variant="body2">{recipe.description}</Typography>
-                {/* אפשר להוסיף גם תמונה של המתכון כאן */}
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-    </Container>
+        {/* הצגת מתכונים */}
+        <Grid container spacing={3}>
+          {filteredRecipes.map((recipe) => (
+            <Grid item xs={12} sm={6} md={4} key={recipe._id}>
+              <Card
+                sx={{
+                  borderRadius: 4,
+                  overflow: "hidden",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  transition: "transform 0.2s",
+                  "&:hover": {
+                    transform: "scale(1.03)",
+                    boxShadow: "0 6px 12px rgba(0, 0, 0, 0.2)",
+                  },
+                }}
+              >
+                <CardMedia
+                  component="img"
+                  height="180"
+                  image={recipe.image || "default-recipe-image.jpg"}
+                  alt={recipe.title}
+                  sx={{ objectFit: "cover" }}
+                />
+                <CardContent>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontFamily: "'Poppins', sans-serif",
+                      fontWeight: "bold",
+                      marginBottom: 1,
+                    }}
+                  >
+                    {recipe.title}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontFamily: "'Poppins', sans-serif",
+                      color: "#7F8C8D",
+                    }}
+                  >
+                    {recipe.description}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+    </Box>
   );
 }
 
