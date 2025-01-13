@@ -47,5 +47,19 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: "Error fetching recipes", error });
   }
 });
+router.get("/:id", async (req, res) => {
+  console.log("Request ID:", req.params.id); // לוג
+  try {
+    const recipe = await Recipe.findById(req.params.id);
+    if (!recipe) {
+      console.log("Recipe not found");
+      return res.status(404).json({ message: "Recipe not found" });
+    }
+    res.json(recipe);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Error fetching recipe details", error });
+  }
+});
 
 module.exports = router;

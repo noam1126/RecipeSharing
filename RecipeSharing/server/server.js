@@ -23,6 +23,8 @@ const recipeRoutes = require("./routes/recipeRoutes");
 // מסלולים
 app.use("/api/users", userRoutes);
 app.use("/api/recipes", recipeRoutes);
+// Serve static files from the "uploads" directory
+app.use("/uploads", express.static("uploads"));
 
 // Start server
 const PORT = process.env.PORT || 5000;

@@ -25,6 +25,7 @@ function HomePage({ user, onLogout }) {
   const [filter, setFilter] = useState("");
   const navigate = useNavigate();
 
+  // Fetch recipes from the server
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
@@ -34,7 +35,7 @@ function HomePage({ user, onLogout }) {
           },
         });
         setRecipes(response.data);
-        setFilteredRecipes(response.data);
+        setFilteredRecipes(response.data); // in case of no filter, use all recipes
       } catch (error) {
         console.error("Error fetching recipes", error);
       }
@@ -43,26 +44,30 @@ function HomePage({ user, onLogout }) {
     fetchRecipes();
   }, []);
 
+  // Handle logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     if (onLogout) {
-      onLogout(); // בדיקה אם onLogout מוגדרת
+      onLogout(); // call logout callback
     }
-    navigate("/login"); // העברת המשתמש למסך התחברות
+    navigate("/login"); // Navigate to login page
   };
 
+  // Handle search query
   const handleSearch = (event) => {
     const value = event.target.value;
     setSearchQuery(value);
     filterRecipes(value, filter);
   };
 
+  // Handle filter changes
   const handleFilterChange = (event) => {
     const value = event.target.value;
     setFilter(value);
     filterRecipes(searchQuery, value);
   };
 
+  // Filter recipes based on search query and category
   const filterRecipes = (query, category) => {
     let filtered = recipes.filter((recipe) =>
       recipe.title.toLowerCase().includes(query.toLowerCase())
@@ -79,10 +84,9 @@ function HomePage({ user, onLogout }) {
     <Box
       sx={{ backgroundColor: "#F7F9FC", minHeight: "100vh", paddingBottom: 4 }}
     >
-      {/* כותרת עליונה */}
+      {/* Navbar */}
       <AppBar position="static" sx={{ backgroundColor: "#AEDFF7" }}>
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          {/* שם האתר בצד שמאל */}
           <Typography
             variant="h5"
             sx={{
@@ -96,7 +100,7 @@ function HomePage({ user, onLogout }) {
             Nono
           </Typography>
 
-          {/* אייקונים בצד ימין */}
+          {/* Icons */}
           <Box>
             <IconButton
               sx={{ color: "#2C3E50" }}
@@ -107,7 +111,6 @@ function HomePage({ user, onLogout }) {
             <IconButton sx={{ color: "#2C3E50" }} onClick={handleLogout}>
               <Logout />
             </IconButton>
-
             <IconButton
               sx={{ color: "#2C3E50" }}
               onClick={() => navigate("/add-recipe")}
@@ -119,7 +122,7 @@ function HomePage({ user, onLogout }) {
       </AppBar>
 
       <Container>
-        {/* שורת חיפוש */}
+        {/* Search and filter */}
         <Paper
           elevation={3}
           sx={{
@@ -140,9 +143,7 @@ function HomePage({ user, onLogout }) {
             sx={{
               flex: 2,
               minWidth: 250,
-              "& .MuiOutlinedInput-root": {
-                borderRadius: 20,
-              },
+              "& .MuiOutlinedInput-root": { borderRadius: 20 },
             }}
           />
           <TextField
@@ -154,9 +155,7 @@ function HomePage({ user, onLogout }) {
             sx={{
               flex: 1,
               minWidth: 150,
-              "& .MuiOutlinedInput-root": {
-                borderRadius: 20,
-              },
+              "& .MuiOutlinedInput-root": { borderRadius: 20 },
             }}
           >
             <MenuItem value="">All</MenuItem>
@@ -166,11 +165,12 @@ function HomePage({ user, onLogout }) {
           </TextField>
         </Paper>
 
-        {/* הצגת מתכונים */}
+        {/* Displaying recipes */}
         <Grid container spacing={3}>
           {filteredRecipes.map((recipe) => (
             <Grid item xs={12} sm={6} md={4} key={recipe._id}>
               <Card
+                onClick={() => navigate(`/recipes/${recipe._id}`)}
                 sx={{
                   borderRadius: 4,
                   overflow: "hidden",
@@ -185,10 +185,11 @@ function HomePage({ user, onLogout }) {
                 <CardMedia
                   component="img"
                   height="180"
-                  image={recipe.image || "default-recipe-image.jpg"}
+                  image={`http://localhost:5000/${recipe.image}`} // לוודא ש- recipe.image מכיל את הנתיב היחסי
                   alt={recipe.title}
                   sx={{ objectFit: "cover" }}
                 />
+
                 <CardContent>
                   <Typography
                     variant="h6"

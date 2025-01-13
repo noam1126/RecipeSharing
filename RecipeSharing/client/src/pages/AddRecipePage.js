@@ -74,6 +74,7 @@ function AddRecipePage() {
           fullWidth
           variant="outlined"
           margin="normal"
+          direction="rtl"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
@@ -84,6 +85,7 @@ function AddRecipePage() {
           rows={4}
           variant="outlined"
           margin="normal"
+          direction="rtl"
           value={ingredients}
           onChange={(e) => setIngredients(e.target.value)}
         />
@@ -94,16 +96,9 @@ function AddRecipePage() {
           rows={4}
           variant="outlined"
           margin="normal"
+          direction="rtl"
           value={instructions}
           onChange={(e) => setInstructions(e.target.value)}
-        />
-        <TextField
-          label="Author"
-          fullWidth
-          variant="outlined"
-          margin="normal"
-          value={author}
-          onChange={(e) => setAuthor(e.target.value)}
         />
         <TextField
           select
