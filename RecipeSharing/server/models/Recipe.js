@@ -1,30 +1,12 @@
 const mongoose = require("mongoose");
 
-const recipeSchema = mongoose.Schema(
-  {
-    title: {
-      type: String,
-      required: true,
-    },
-    ingredients: {
-      type: [String], // רשימה של חומרים
-      required: true,
-    },
-    instructions: {
-      type: String,
-      required: true,
-    },
-    author: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // מתייחס למשתמש שפרסם את המתכון
-      required: true,
-    },
-  },
-  {
-    timestamps: true, // יוסיף זמן יצירה ועדכון אוטומטי
-  }
-);
+const recipeSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  ingredients: { type: String, required: true },
+  instructions: { type: String, required: true },
+  category: { type: String, required: true },
+  image: { type: String }, // קישור לתמונה
+  author: { type: String, required: true },
+});
 
-const Recipe = mongoose.model("Recipe", recipeSchema);
-
-module.exports = Recipe;
+module.exports = mongoose.model("Recipe", recipeSchema);

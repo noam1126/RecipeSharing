@@ -14,6 +14,7 @@ function AddRecipePage() {
   const [title, setTitle] = useState("");
   const [ingredients, setIngredients] = useState("");
   const [instructions, setInstructions] = useState("");
+  const [author, setAuthor] = useState(""); // שם המחבר
   const [category, setCategory] = useState("");
   const [image, setImage] = useState(null);
 
@@ -29,6 +30,7 @@ function AddRecipePage() {
     formData.append("title", title);
     formData.append("ingredients", ingredients);
     formData.append("instructions", instructions);
+    formData.append("author", "noam@gmail.com"); // היוצר מתמלא אוטומטית
     formData.append("category", category);
     if (image) {
       formData.append("image", image);
@@ -37,7 +39,6 @@ function AddRecipePage() {
     try {
       await axios.post("http://localhost:5000/api/recipes", formData, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "multipart/form-data",
         },
       });
@@ -65,15 +66,7 @@ function AddRecipePage() {
         }}
         component={Paper}
       >
-        <Typography
-          variant="h5"
-          sx={{
-            fontFamily: "'Poppins', sans-serif",
-            fontWeight: "bold",
-            color: "#2C3E50",
-            marginBottom: 3,
-          }}
-        >
+        <Typography variant="h5" sx={{ marginBottom: 3 }}>
           Add a New Recipe
         </Typography>
         <TextField
@@ -105,6 +98,14 @@ function AddRecipePage() {
           onChange={(e) => setInstructions(e.target.value)}
         />
         <TextField
+          label="Author"
+          fullWidth
+          variant="outlined"
+          margin="normal"
+          value={author}
+          onChange={(e) => setAuthor(e.target.value)}
+        />
+        <TextField
           select
           label="Category"
           fullWidth
@@ -122,12 +123,7 @@ function AddRecipePage() {
         <Button
           variant="contained"
           component="label"
-          sx={{
-            marginTop: "1rem",
-            backgroundColor: "#AEDFF7",
-            color: "#2C3E50",
-            "&:hover": { backgroundColor: "#82CFEA" },
-          }}
+          sx={{ marginTop: "1rem" }}
         >
           Upload Image
           <input
@@ -141,12 +137,7 @@ function AddRecipePage() {
           onClick={handleAddRecipe}
           variant="contained"
           fullWidth
-          sx={{
-            marginTop: "1.5rem",
-            backgroundColor: "#2C3E50",
-            color: "#FFFFFF",
-            "&:hover": { backgroundColor: "#1B2B3A" },
-          }}
+          sx={{ marginTop: "1.5rem" }}
         >
           Add Recipe
         </Button>

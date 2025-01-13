@@ -28,7 +28,7 @@ function HomePage({ user, onLogout }) {
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/recipes", {
+        const response = await axios.get("http://localhost:5000/api/recipes", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
