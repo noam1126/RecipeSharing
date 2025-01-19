@@ -48,7 +48,7 @@ router.get("/", async (req, res) => {
   }
 });
 router.get("/:id", async (req, res) => {
-  console.log("Request ID:", req.params.id); // לוג
+  console.log("Request ID:", req.params.id);
   try {
     const recipe = await Recipe.findById(req.params.id);
     if (!recipe) {

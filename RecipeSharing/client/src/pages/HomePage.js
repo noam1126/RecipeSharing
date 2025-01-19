@@ -34,6 +34,7 @@ function HomePage({ user, onLogout }) {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
+
         setRecipes(response.data);
         setFilteredRecipes(response.data); // in case of no filter, use all recipes
       } catch (error) {
@@ -82,41 +83,111 @@ function HomePage({ user, onLogout }) {
 
   return (
     <Box
-      sx={{ backgroundColor: "#F7F9FC", minHeight: "100vh", paddingBottom: 4 }}
+      sx={{ backgroundColor: "#e7f1fe", minHeight: "100vh", paddingBottom: 4 }}
     >
       {/* Navbar */}
-      <AppBar position="static" sx={{ backgroundColor: "#AEDFF7" }}>
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography
-            variant="h5"
+      <AppBar position="static" sx={{ backgroundColor: "#C4DCFC" }}>
+        <Toolbar
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            width: "100%",
+          }}
+        >
+          {/* Box for the logo */}
+          <Box
             sx={{
-              fontWeight: "bold",
-              fontFamily: "'Poppins', sans-serif",
-              color: "#2C3E50",
               cursor: "pointer",
+              display: "flex",
+              justifyContent: "center", // ממרכז אופקית
+              alignItems: "center", // ממרכז אנכית
+              height: "100%",
+              marginRight: 2, // הוספת רווח קטן מצד ימין של הלוגו
             }}
             onClick={() => navigate("/")}
           >
-            Nono
-          </Typography>
+            <img
+              src={`http://localhost:5000/uploads/logonono.png`}
+              alt="Nono Logo"
+              style={{ height: "75px", objectFit: "contain" }}
+            />
+          </Box>
 
-          {/* Icons */}
-          <Box>
-            <IconButton
-              sx={{ color: "#2C3E50" }}
-              onClick={() => navigate("/favorites")}
+          {/* Categories and Add Recipe Icon */}
+          <Box
+            sx={{ display: "flex", gap: 2, alignItems: "center", flexGrow: 1 }}
+          >
+            <Typography
+              sx={{
+                cursor: "pointer",
+                fontWeight: "bold",
+                color: "#2C3E50",
+                "&:hover": { textDecoration: "underline" },
+              }}
+              onClick={() =>
+                handleFilterChange({ target: { value: "Starter" } })
+              }
             >
-              <Favorite />
-            </IconButton>
-            <IconButton sx={{ color: "#2C3E50" }} onClick={handleLogout}>
-              <Logout />
-            </IconButton>
+              Starter
+            </Typography>
+            <Typography
+              sx={{
+                cursor: "pointer",
+                fontWeight: "bold",
+                color: "#2C3E50",
+                "&:hover": { textDecoration: "underline" },
+              }}
+              onClick={() => handleFilterChange({ target: { value: "Main" } })}
+            >
+              Main
+            </Typography>
+            <Typography
+              sx={{
+                cursor: "pointer",
+                fontWeight: "bold",
+                color: "#2C3E50",
+                "&:hover": { textDecoration: "underline" },
+              }}
+              onClick={() =>
+                handleFilterChange({ target: { value: "Dessert" } })
+              }
+            >
+              Dessert
+            </Typography>
+
+            {/* Add Recipe Icon next to Dessert */}
             <IconButton
               sx={{ color: "#2C3E50" }}
               onClick={() => navigate("/add-recipe")}
             >
               <AddCircle />
             </IconButton>
+          </Box>
+
+          {/* Search Field */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              flex: 1,
+              marginLeft: "300px", // הוספת רווח של 300 פיקסלים מהצד השמאלי
+            }}
+          >
+            <TextField
+              label="Search Recipes"
+              variant="outlined"
+              value={searchQuery}
+              onChange={handleSearch}
+              size="small" // מקטין את הגובה
+              InputProps={{
+                sx: { height: 40 }, // גובה מותאם אישית
+              }}
+              sx={{
+                maxWidth: 300, // הגבלת רוחב שורת החיפוש
+                "& .MuiOutlinedInput-root": { borderRadius: 20 },
+              }}
+            />
           </Box>
         </Toolbar>
       </AppBar>
@@ -131,8 +202,8 @@ function HomePage({ user, onLogout }) {
             borderRadius: 3,
             display: "flex",
             gap: 2,
-            flexWrap: "wrap",
-            backgroundColor: "#FFFFFF",
+            justifyContent: "center",
+            backgroundColor: "#ffffff",
           }}
         >
           <TextField
@@ -140,9 +211,14 @@ function HomePage({ user, onLogout }) {
             variant="outlined"
             value={searchQuery}
             onChange={handleSearch}
+            size="small" // מקטין את הגובה
+            InputProps={{
+              sx: { height: 40 }, // גובה מותאם אישית
+            }}
             sx={{
               flex: 2,
-              minWidth: 250,
+              minWidth: 600,
+              maxWidth: 800,
               "& .MuiOutlinedInput-root": { borderRadius: 20 },
             }}
           />
@@ -152,9 +228,14 @@ function HomePage({ user, onLogout }) {
             value={filter}
             onChange={handleFilterChange}
             variant="outlined"
+            size="small" // מקטין את הגובה
+            InputProps={{
+              sx: { height: 40 }, // גובה מותאם אישית
+            }}
             sx={{
               flex: 1,
-              minWidth: 150,
+              minWidth: 250,
+              maxWidth: 300,
               "& .MuiOutlinedInput-root": { borderRadius: 20 },
             }}
           >
@@ -168,7 +249,7 @@ function HomePage({ user, onLogout }) {
         {/* Displaying recipes */}
         <Grid container spacing={3}>
           {filteredRecipes.map((recipe) => (
-            <Grid item xs={12} sm={6} md={4} key={recipe._id}>
+            <Grid item xs={12} sm={6} md={4} lg={3} key={recipe._id}>
               <Card
                 onClick={() => navigate(`/recipes/${recipe._id}`)}
                 sx={{
@@ -206,6 +287,7 @@ function HomePage({ user, onLogout }) {
                     sx={{
                       fontFamily: "'Poppins', sans-serif",
                       color: "#7F8C8D",
+                      direction: "rtl",
                     }}
                   >
                     {recipe.description}
