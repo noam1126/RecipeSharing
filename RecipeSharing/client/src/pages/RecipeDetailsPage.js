@@ -11,10 +11,10 @@ import {
   Toolbar,
   IconButton,
 } from "@mui/material";
-import { Favorite, Logout, AddCircle } from "@mui/icons-material";
+import { AddCircle } from "@mui/icons-material";
 
 function RecipeDetailsPage() {
-  const { id } = useParams(); // שליפת מזהה המתכון מהכתובת
+  const { id } = useParams(); // Extracting recipe ID from URL
   const [recipe, setRecipe] = useState(null);
   const navigate = useNavigate();
 
@@ -38,90 +38,144 @@ function RecipeDetailsPage() {
   }
 
   return (
-    <Box sx={{ backgroundColor: "#F7F9FC", minHeight: "100vh" }}>
+    <Box
+      sx={{ backgroundColor: "#e7f1fe", minHeight: "100vh", paddingBottom: 4 }}
+    >
       {/* Navbar */}
-      <AppBar position="static" sx={{ backgroundColor: "#AEDFF7" }}>
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography
-            variant="h5"
+      <AppBar position="static" sx={{ backgroundColor: "#C4DCFC" }}>
+        <Toolbar
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            width: "100%",
+          }}
+        >
+          {/* Logo */}
+          <Box
             sx={{
-              fontWeight: "bold",
-              fontFamily: "'Poppins', sans-serif",
-              color: "#2C3E50",
               cursor: "pointer",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+              marginRight: 2,
             }}
             onClick={() => navigate("/")}
           >
-            Nono
-          </Typography>
-
-          {/* Icons */}
-          <Box>
-            <IconButton
-              sx={{ color: "#2C3E50" }}
-              onClick={() => navigate("/favorites")}
-            >
-              <Favorite />
-            </IconButton>
-            <IconButton
-              sx={{ color: "#2C3E50" }}
-              onClick={() => {
-                localStorage.removeItem("token");
-                navigate("/login");
-              }}
-            >
-              <Logout />
-            </IconButton>
-            <IconButton
-              sx={{ color: "#2C3E50" }}
-              onClick={() => navigate("/add-recipe")}
-            >
-              <AddCircle />
-            </IconButton>
+            <img
+              src={`http://localhost:5000/uploads/logonono.png`}
+              alt="Nono Logo"
+              style={{ height: "75px", objectFit: "contain" }}
+            />
           </Box>
+
+          {/* Categories */}
+          <Box
+            sx={{ display: "flex", gap: 2, alignItems: "center", flexGrow: 1 }}
+          >
+            {[
+              "Starter",
+              "Pasta",
+              "Meat",
+              "Breakfast",
+              "Pastries",
+              "Desserts",
+            ].map((category) => (
+              <Typography
+                key={category}
+                sx={{
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                  color: "#2C3E50",
+                  "&:hover": { textDecoration: "underline" },
+                }}
+                onClick={() =>
+                  console.log(`Filtering by category: ${category}`)
+                }
+              >
+                {category}
+              </Typography>
+            ))}
+          </Box>
+
+          {/* Add Recipe Icon */}
+          <IconButton
+            sx={{ color: "#2C3E50" }}
+            onClick={() => navigate("/add-recipe")}
+          >
+            <AddCircle />
+          </IconButton>
         </Toolbar>
       </AppBar>
 
       {/* Recipe Details */}
       <Container sx={{ marginTop: 4 }}>
-        <Paper sx={{ padding: 3, borderRadius: 4 }}>
-          <Typography
-            variant="h4"
+        <Paper
+          sx={{
+            padding: 3,
+            borderRadius: 4,
+            display: "flex",
+            flexDirection: "row", // הצבת תוכן בשורה
+            alignItems: "flex-start", // יישור למעלה
+            gap: 3, // רווח בין התמונה לטקסט
+          }}
+        >
+          {/* התמונה בצד שמאל */}
+          <Box
             sx={{
-              marginBottom: 2,
-              textAlign: "center",
-              fontFamily: "'Poppins', sans-serif",
+              width: "300px",
+              height: "300px",
+              borderRadius: 2,
+              overflow: "hidden",
             }}
           >
-            {recipe.title}
-          </Typography>
-          <CardMedia
-            component="img"
-            height="300"
-            image={`http://localhost:5000/${recipe.image}`}
-            alt={recipe.title}
-            sx={{ borderRadius: 4, marginBottom: 3 }}
-          />
-          <Typography
-            variant="body1"
-            sx={{ textAlign: "justify", direction: "rtl" }}
-          >
-            <strong>מצרכים:</strong>
-            <ul>
-              {recipe.ingredients.split("\n").map((ingredient, index) => (
-                <li key={index}>{ingredient}</li>
+            <CardMedia
+              component="img"
+              image={`http://localhost:5000/${recipe.image}`}
+              alt={recipe.title}
+              sx={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover", // התמונה מותאמת לגודל הקופסה
+              }}
+            />
+          </Box>
+
+          {/* הטקסט בצד ימין */}
+          <Box sx={{ flex: 1, direction: "rtl" }}>
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: 2,
+                fontFamily: "'Poppins', sans-serif",
+              }}
+            >
+              {recipe.title}
+            </Typography>
+            <Typography variant="body1" sx={{ textAlign: "justify" }}>
+              <strong>מצרכים:</strong>
+              <ul>
+                {recipe.ingredients.split("\n").map((ingredient, index) => (
+                  <li key={index}>{ingredient}</li>
+                ))}
+              </ul>
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{ textAlign: "justify", marginTop: 2 }}
+            >
+              <strong>אופן ההכנה:</strong>
+              {recipe.instructions.split("\n").map((step, index) => (
+                <p key={index}>{step}</p>
               ))}
-            </ul>
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{ textAlign: "justify", direction: "rtl" }}
-          >
-            <strong>אופן ההכנה:</strong>
-            {recipe.instructions.split("\n").map((step, index) => (
-              <p key={index}>{step}</p>
-            ))}
-          </Typography>
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{ textAlign: "right", marginTop: 2 }}
+            >
+              קטגוריה: {recipe.category}
+            </Typography>
+          </Box>
         </Paper>
       </Container>
     </Box>

@@ -137,9 +137,20 @@ function HomePage({ user, onLogout }) {
                 color: "#2C3E50",
                 "&:hover": { textDecoration: "underline" },
               }}
-              onClick={() => handleFilterChange({ target: { value: "Main" } })}
+              onClick={() => handleFilterChange({ target: { value: "Pasta" } })}
             >
-              Main
+              Pasta
+            </Typography>
+            <Typography
+              sx={{
+                cursor: "pointer",
+                fontWeight: "bold",
+                color: "#2C3E50",
+                "&:hover": { textDecoration: "underline" },
+              }}
+              onClick={() => handleFilterChange({ target: { value: "Meat" } })}
+            >
+              Meat
             </Typography>
             <Typography
               sx={{
@@ -149,45 +160,56 @@ function HomePage({ user, onLogout }) {
                 "&:hover": { textDecoration: "underline" },
               }}
               onClick={() =>
-                handleFilterChange({ target: { value: "Dessert" } })
+                handleFilterChange({ target: { value: "Breakfast" } })
               }
             >
-              Dessert
+              Breakfast
+            </Typography>
+            <Typography
+              sx={{
+                cursor: "pointer",
+                fontWeight: "bold",
+                color: "#2C3E50",
+                "&:hover": { textDecoration: "underline" },
+              }}
+              onClick={() =>
+                handleFilterChange({ target: { value: "Pastries" } })
+              }
+            >
+              Pastries
+            </Typography>
+            <Typography
+              sx={{
+                cursor: "pointer",
+                fontWeight: "bold",
+                color: "#2C3E50",
+                "&:hover": { textDecoration: "underline" },
+              }}
+              onClick={() =>
+                handleFilterChange({ target: { value: "Desserts" } })
+              }
+            >
+              Desserts
             </Typography>
 
-            {/* Add Recipe Icon next to Dessert */}
-            <IconButton
-              sx={{ color: "#2C3E50" }}
-              onClick={() => navigate("/add-recipe")}
-            >
-              <AddCircle />
-            </IconButton>
-          </Box>
-
-          {/* Search Field */}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-start",
-              alignItems: "center",
-              flex: 1,
-              marginLeft: "300px", // הוספת רווח של 300 פיקסלים מהצד השמאלי
-            }}
-          >
-            <TextField
-              label="Search Recipes"
-              variant="outlined"
-              value={searchQuery}
-              onChange={handleSearch}
-              size="small" // מקטין את הגובה
-              InputProps={{
-                sx: { height: 40 }, // גובה מותאם אישית
-              }}
+            {/* Search Field */}
+            <Box
               sx={{
-                maxWidth: 300, // הגבלת רוחב שורת החיפוש
-                "& .MuiOutlinedInput-root": { borderRadius: 20 },
+                display: "flex",
+                justifyContent: "flex-start",
+                alignItems: "center",
+                flex: 1,
+                marginLeft: "600px", // הוספת רווח של 100 פיקסלים מהצד השמאלי
               }}
-            />
+            >
+              {/* Add Recipe Icon next to Dessert */}
+              <IconButton
+                sx={{ color: "#2C3E50" }}
+                onClick={() => navigate("/add-recipe")}
+              >
+                <AddCircle />
+              </IconButton>
+            </Box>
           </Box>
         </Toolbar>
       </AppBar>
@@ -217,39 +239,16 @@ function HomePage({ user, onLogout }) {
             }}
             sx={{
               flex: 2,
-              minWidth: 600,
-              maxWidth: 800,
+              minWidth: 900,
+              maxWidth: 1100,
               "& .MuiOutlinedInput-root": { borderRadius: 20 },
             }}
           />
-          <TextField
-            select
-            label="Filter by Category"
-            value={filter}
-            onChange={handleFilterChange}
-            variant="outlined"
-            size="small" // מקטין את הגובה
-            InputProps={{
-              sx: { height: 40 }, // גובה מותאם אישית
-            }}
-            sx={{
-              flex: 1,
-              minWidth: 250,
-              maxWidth: 300,
-              "& .MuiOutlinedInput-root": { borderRadius: 20 },
-            }}
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value="Dessert">Dessert</MenuItem>
-            <MenuItem value="Starter">Starter</MenuItem>
-            <MenuItem value="Main">Main</MenuItem>
-          </TextField>
         </Paper>
-
         {/* Displaying recipes */}
         <Grid container spacing={3}>
           {filteredRecipes.map((recipe) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={recipe._id}>
+            <Grid item xs={12} sm={6} md={4} lg={2.4} key={recipe._id}>
               <Card
                 onClick={() => navigate(`/recipes/${recipe._id}`)}
                 sx={{
@@ -278,6 +277,7 @@ function HomePage({ user, onLogout }) {
                       fontFamily: "'Poppins', sans-serif",
                       fontWeight: "bold",
                       marginBottom: 1,
+                      direction: "rtl",
                     }}
                   >
                     {recipe.title}

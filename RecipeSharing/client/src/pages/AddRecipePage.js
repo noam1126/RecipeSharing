@@ -18,7 +18,14 @@ function AddRecipePage() {
   const [category, setCategory] = useState("");
   const [image, setImage] = useState(null);
 
-  const categories = ["Dessert", "Starter", "Main"]; // קטגוריות קיימות
+  const categories = [
+    "Starter",
+    "Pasta",
+    "Meat",
+    "Breakfast",
+    "Pastries",
+    "Desserts",
+  ]; // קטגוריות קיימות
 
   const handleAddRecipe = async () => {
     if (!title || !ingredients || !instructions || !category) {

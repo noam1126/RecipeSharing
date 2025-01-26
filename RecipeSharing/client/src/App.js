@@ -8,7 +8,6 @@ import {
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import RegisterPage from "./pages/RegisterPage";
-import FavoritesPage from "./pages/FavoritesPage"; // ייבוא הדף של המועדפים
 import AddRecipePage from "./pages/AddRecipePage"; // ייבוא דף יצירת מתכון חדש
 import RecipeDetailsPage from "./pages/RecipeDetailsPage"; // ייבוא עמוד פרטי המתכון
 
@@ -35,7 +34,6 @@ function App() {
 
         {/* עמוד הרשמה */}
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/favorites" element={<FavoritesPage />} />
         <Route path="/add-recipe" element={<AddRecipePage />} />
         <Route path="/recipes/:id" element={<RecipeDetailsPage />} />
       </Routes>
