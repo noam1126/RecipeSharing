@@ -18,23 +18,26 @@ function App() {
     <Router>
       <Routes>
         {/* אם לא מחובר, עובר לדף התחברות */}
-        <Route path="/" element={<LoginPage />} />
+        <Route path="/" element={<HomePage />} />
 
         {/* עמוד התחברות */}
-        <Route
-          path="/login"
-          element={isAuthenticated ? <Navigate to="/home" /> : <LoginPage />}
-        />
+        <Route path="/login" element={<LoginPage />} />
 
         {/* עמוד הבית */}
-        <Route
-          path="/home"
-          element={isAuthenticated ? <HomePage /> : <Navigate to="/login" />}
-        />
+        <Route path="/home" element={<HomePage />} />
 
         {/* עמוד הרשמה */}
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/add-recipe" element={<AddRecipePage />} />
+        <Route
+          path="/add-recipe"
+          element={
+            localStorage.getItem("authToken") ? (
+              <AddRecipePage />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
         <Route path="/recipes/:id" element={<RecipeDetailsPage />} />
       </Routes>
     </Router>

@@ -22,8 +22,14 @@ function LoginPage() {
       if (response.data.token) {
         // שמירת הטוקן ב-localStorage
         localStorage.setItem("authToken", response.data.token);
+        console.log(
+          "Token saved in localStorage:",
+          localStorage.getItem("authToken")
+        ); // הדפסה נוספת לבדיקה
+
         alert("Login successful!");
-        navigate("/home"); // מעבר לעמוד הראשי
+        console.log("Navigating to /add-recipe...");
+        navigate("/add-recipe");
       } else {
         alert("Invalid credentials!");
       }
